@@ -38,10 +38,7 @@ export function Settings({ settings, onSave }: { settings: SettingsT; onSave: (n
 
     const toggleFocused = () => {
         if (focus === "mode") {
-            setDraft((d) => ({
-                ...d,
-                mode: d.mode === "consensus" ? "poll" : "consensus",
-            }));
+            setDraft((d) => ({ ...d, mode: d.mode === "consensus" ? "poll" : "consensus" }));
         } else {
             setDraft((d) => ({ ...d, includeZero: !d.includeZero }));
         }

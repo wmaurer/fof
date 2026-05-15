@@ -268,11 +268,7 @@ A registry is a graph of atom nodes. Sharing it across realms is **physically im
 The plan's flat `Atom.make<ReadonlyArray<ChatMessage>>([])` works for the happy path but cannot model per-message status. Upgrade path:
 
 ```ts
-type ChatMessage = {
-    readonly id: string;
-    readonly role: "user" | "assistant";
-    readonly content: string;
-};
+type ChatMessage = { readonly id: string; readonly role: "user" | "assistant"; readonly content: string };
 
 // History is a plain Writable; the active reply is its own AsyncResult atom.
 export const chatHistoryAtom = Atom.make<ReadonlyArray<ChatMessage>>([]);

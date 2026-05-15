@@ -24,10 +24,7 @@ export const SettingsSchema = Schema.Struct({
 export type Settings = Schema.Schema.Type<typeof SettingsSchema>;
 export type Mode = Settings["mode"];
 
-export const DEFAULT_SETTINGS: Settings = {
-    mode: "consensus",
-    includeZero: false,
-};
+export const DEFAULT_SETTINGS: Settings = { mode: "consensus", includeZero: false };
 
 export const displayValues = (includeZero: boolean): ReadonlyArray<FistValue> =>
     includeZero ? FIST_VALUES : Array.filter(FIST_VALUES, (v): v is Exclude<FistValue, 0> => v !== 0);

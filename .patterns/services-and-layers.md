@@ -43,9 +43,7 @@ import * as Stream from "effect/Stream";
 
 export class ChatService extends Context.Service<
     ChatService,
-    {
-        readonly streamReply: (request: ChatStreamRequest) => Stream.Stream<StreamPart, ServerUnreachable>;
-    }
+    { readonly streamReply: (request: ChatStreamRequest) => Stream.Stream<StreamPart, ServerUnreachable> }
 >()("@moat-assistant/ai-client/ChatService") {}
 ```
 

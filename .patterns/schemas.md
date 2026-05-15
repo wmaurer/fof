@@ -34,9 +34,7 @@ For this repo, the best default pattern when modeling data with `effect/Schema` 
 The first call takes the identifier (also used as the schema's annotation key); the second takes the fields struct.
 
 ```ts
-export class PingResponse extends Schema.Class<PingResponse>("PingResponse")({
-    status: Schema.Literal("ok"),
-}) {}
+export class PingResponse extends Schema.Class<PingResponse>("PingResponse")({ status: Schema.Literal("ok") }) {}
 
 const ok = new PingResponse({ status: "ok" });
 ```
@@ -48,9 +46,7 @@ const ok = new PingResponse({ status: "ok" });
 The first call's argument is the optional **identifier** (defaults to the tag); the second call's first argument is the **tag** value injected as `_tag`.
 
 ```ts
-export class TextDelta extends Schema.TaggedClass<TextDelta>()("TextDelta", {
-    delta: Schema.String,
-}) {}
+export class TextDelta extends Schema.TaggedClass<TextDelta>()("TextDelta", { delta: Schema.String }) {}
 
 const part = new TextDelta({ delta: "hi" });
 part._tag; // "TextDelta"

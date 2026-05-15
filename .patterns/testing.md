@@ -118,11 +118,7 @@ For HTTP APIs in this repo, prefer a typed client:
 
 ```ts
 const client = yield * HttpApiClient.make(Api);
-const created =
-    yield *
-    client.users.create({
-        payload: { name: "Jane" },
-    });
+const created = yield * client.users.create({ payload: { name: "Jane" } });
 ```
 
 That keeps transport tests type-safe and aligned with the shared `HttpApi` definition.
@@ -156,10 +152,9 @@ Choose deliberately:
 Make test layers small, composable, and named for what they provide.
 
 ```ts
-export const TestHttpLive = HttpRouter.serve(ApiLive, {
-    disableListenLog: true,
-    disableLogger: true,
-}).pipe(Layer.provideMerge(NodeHttpServer.layerTest));
+export const TestHttpLive = HttpRouter.serve(ApiLive, { disableListenLog: true, disableLogger: true }).pipe(
+    Layer.provideMerge(NodeHttpServer.layerTest),
+);
 ```
 
 Guidelines:

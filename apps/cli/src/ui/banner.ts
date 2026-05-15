@@ -15,9 +15,7 @@ const GLYPHS: Record<string, ReadonlyArray<string>> = {
     " ": ["     ", "     ", "     ", "     ", "     "],
 };
 
-export type BannerOptions = {
-    readonly scale?: number;
-};
+export type BannerOptions = { readonly scale?: number };
 
 export function renderBanner(text: string, options?: BannerOptions): string {
     const scale = options?.scale ?? 1;

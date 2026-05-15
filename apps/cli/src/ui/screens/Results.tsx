@@ -10,10 +10,7 @@ type ConsensusStatus = Data.TaggedEnum<{
     Hidden: {};
     Blocked: { readonly vetoes: number };
     Consensus: { readonly threshold: number };
-    NeedsDiscussion: {
-        readonly lowVotes: number;
-        readonly threshold: number;
-    };
+    NeedsDiscussion: { readonly lowVotes: number; readonly threshold: number };
 }>;
 
 const ConsensusStatus = Data.taggedEnum<ConsensusStatus>();
@@ -27,10 +24,7 @@ const computeStatus = (params: {
     if (params.total === 0 || params.mode === "poll") return ConsensusStatus.Hidden();
     if (params.vetoes > 0) return ConsensusStatus.Blocked({ vetoes: params.vetoes });
     if (params.lowVotes === 0) return ConsensusStatus.Consensus({ threshold: CONSENSUS_THRESHOLD });
-    return ConsensusStatus.NeedsDiscussion({
-        lowVotes: params.lowVotes,
-        threshold: CONSENSUS_THRESHOLD,
-    });
+    return ConsensusStatus.NeedsDiscussion({ lowVotes: params.lowVotes, threshold: CONSENSUS_THRESHOLD });
 };
 
 export function Results({ counts, settings, onDone }: { counts: VoteCounts; settings: Settings; onDone: () => void }) {
@@ -53,12 +47,7 @@ export function Results({ counts, settings, onDone }: { counts: VoteCounts; sett
         (a, v) => a + counts[v],
     );
 
-    const status = computeStatus({
-        total,
-        mode: settings.mode,
-        vetoes,
-        lowVotes,
-    });
+    const status = computeStatus({ total, mode: settings.mode, vetoes, lowVotes });
 
     return (
         <Box width={columns} height={rows} flexDirection="column" justifyContent="center" alignItems="center">

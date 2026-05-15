@@ -1,7 +1,108 @@
 {
-    "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "types": ["node"]
+        // Environment setup & latest features
+        "lib": ["ESNext"],
+        "target": "ESNext",
+        "module": "Preserve",
+        "moduleDetection": "force",
+        "jsx": "react-jsx",
+        "types": ["node"],
+        "allowJs": true,
+
+        // Bundler mode
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "verbatimModuleSyntax": true,
+        "noEmit": true,
+
+        // Best practices
+        "strict": true,
+        "skipLibCheck": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true,
+
+        // Some stricter flags (disabled by default)
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "noPropertyAccessFromIndexSignature": false,
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "diagnosticSeverity": {
+                    "anyUnknownInErrorContext": "error",
+                    "classSelfMismatch": "error",
+                    "duplicatePackage": "error",
+                    "effectFnImplicitAny": "error",
+                    "floatingEffect": "error",
+                    "genericEffectServices": "error",
+                    "missingEffectContext": "error",
+                    "missingEffectError": "error",
+                    "missingLayerContext": "error",
+                    "missingReturnYieldStar": "error",
+                    "missingStarInYieldEffectGen": "error",
+                    "nonObjectEffectServiceType": "error",
+                    "outdatedApi": "error",
+                    "overriddenSchemaConstructor": "error",
+                    "catchUnfailableEffect": "error",
+                    "effectFnIife": "error",
+                    "effectGenUsesAdapter": "error",
+                    "effectInFailure": "error",
+                    "effectInVoidSuccess": "error",
+                    "globalErrorInEffectCatch": "error",
+                    "globalErrorInEffectFailure": "error",
+                    "layerMergeAllWithDependencies": "error",
+                    "lazyPromiseInEffectSync": "error",
+                    "leakingRequirements": "error",
+                    "multipleEffectProvide": "error",
+                    "returnEffectInGen": "error",
+                    "runEffectInsideEffect": "error",
+                    "schemaSyncInEffect": "error",
+                    "scopeInLayerEffect": "error",
+                    "strictEffectProvide": "error",
+                    "tryCatchInEffectGen": "error",
+                    "unknownInEffectCatch": "error",
+                    "asyncFunction": "error",
+                    "cryptoRandomUUID": "error",
+                    "cryptoRandomUUIDInEffect": "error",
+                    "extendsNativeError": "error",
+                    "globalConsole": "error",
+                    "globalConsoleInEffect": "error",
+                    "globalDate": "error",
+                    "globalDateInEffect": "error",
+                    "globalFetch": "error",
+                    "globalFetchInEffect": "error",
+                    "globalRandom": "error",
+                    "globalRandomInEffect": "error",
+                    "globalTimers": "error",
+                    "globalTimersInEffect": "error",
+                    "instanceOfSchema": "error",
+                    "newPromise": "error",
+                    "nodeBuiltinImport": "error",
+                    "preferSchemaOverJson": "error",
+                    "processEnv": "error",
+                    "processEnvInEffect": "error",
+                    "catchAllToMapError": "error",
+                    "deterministicKeys": "error",
+                    "effectFnOpportunity": "error",
+                    "effectMapVoid": "error",
+                    "effectSucceedWithVoid": "error",
+                    "missedPipeableOpportunity": "error",
+                    "missingEffectServiceDependency": "error",
+                    "nestedEffectGenYield": "error",
+                    "redundantSchemaTagIdentifier": "error",
+                    "schemaStructWithTag": "error",
+                    "schemaUnionOfLiterals": "error",
+                    "serviceNotAsClass": "error",
+                    "strictBooleanExpressions": "error",
+                    "unnecessaryArrowBlock": "error",
+                    "unnecessaryEffectGen": "error",
+                    "unnecessaryFailYieldableError": "error",
+                    "unnecessaryPipe": "error",
+                    "unnecessaryPipeChain": "error"
+                }
+            }
+        ]
     },
     "include": [
         "apps/*/src/**/*.ts",
@@ -15,5 +116,6 @@
         "packages/*/test/**/*.tsx",
         "packages/*/vitest.config.ts",
         "vitest.config.ts"
-    ]
+    ],
+    "$schema": "https://raw.githubusercontent.com/Effect-TS/tsgo/refs/heads/main/schema.json"
 }
