@@ -1,0 +1,21 @@
+{
+    "name": "@fof/cli",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "tsx src/index.tsx",
+        "dev": "tsx watch src/index.tsx"
+    },
+    "dependencies": {
+        "@effect/atom-react": "4.0.0-beta.66",
+        "@effect/platform-node": "4.0.0-beta.66",
+        "effect": "4.0.0-beta.66",
+        "ink": "^7.0.3",
+        "react": "^19.2.6"
+    },
+    "devDependencies": {
+        "@types/node": "^25.8.0",
+        "@types/react": "^19.2.14",
+        "tsx": "^4.22.0"
+    }
+}

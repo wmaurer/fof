@@ -1,0 +1,24 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["typescript", "import", "react"],
+    "jsPlugins": ["eslint-plugin-react-x", "eslint-plugin-react-dom"],
+    "env": {
+        "browser": true,
+        "es2024": true
+    },
+    "rules": {
+        "no-unused-vars": "off",
+        "typescript/no-unused-vars": "warn",
+        "react-x/no-forward-ref": "warn"
+    },
+    "overrides": [
+        {
+            "files": ["apps/cli/**/*.ts", "apps/cli/**/*.tsx"],
+            "env": {
+                "browser": false,
+                "node": true
+            }
+        }
+    ],
+    "ignorePatterns": ["**/dist", "**/routeTree.gen.ts"]
+}

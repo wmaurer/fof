@@ -1,0 +1,38 @@
+{
+    "name": "fof",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "typecheck": "tsgo --noEmit && tsgo -p apps/cli/tsconfig.json --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "start": "pnpm --filter @fof/cli start",
+        "dev": "pnpm --filter @fof/cli dev",
+        "lint": "oxlint",
+        "fmt": "oxfmt .",
+        "fmt:check": "oxfmt --check .",
+        "prepare": "effect-tsgo patch"
+    },
+    "devDependencies": {
+        "@effect/tsgo": "latest",
+        "@types/node": "latest",
+        "@typescript/native-preview": "latest",
+        "eslint-plugin-react-dom": "latest",
+        "eslint-plugin-react-x": "latest",
+        "oxfmt": "latest",
+        "oxlint": "latest",
+        "vitest": "latest"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "esbuild",
+            "msgpackr-extract"
+        ],
+        "overrides": {
+            "effect": "4.0.0-beta.66",
+            "@effect/atom-react": "4.0.0-beta.66",
+            "@effect/platform-node": "4.0.0-beta.66",
+            "@effect/platform-node-shared": "4.0.0-beta.66"
+        }
+    }
+}

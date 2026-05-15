@@ -1,0 +1,23 @@
+{
+    "printWidth": 120,
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "all",
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "sortImports": {
+        "newlinesBetween": true,
+        "customGroups": [{ "groupName": "fof", "elementNamePattern": ["@fof/**"] }],
+        "groups": [
+            "value-builtin",
+            "value-external",
+            "fof",
+            "value-internal",
+            ["value-parent", "value-sibling", "value-index"],
+            "type-import",
+            "unknown"
+        ]
+    },
+    "ignorePatterns": ["**/dist", "**/routeTree.gen.ts", "pnpm-lock.yaml"]
+}
