@@ -2,7 +2,7 @@ import { Match } from "effect";
 import { Box, Text, useInput, useWindowSize } from "ink";
 import { useCallback, useMemo, useState } from "react";
 
-import { FIST_VALUES, FIST_WORDS, displayValues, type FistValue, type VoteCounts } from "../types.js";
+import { FIST_VALUES, FIST_WORDS, decodeVoteCounts, displayValues, type FistValue, type VoteCounts } from "../types.js";
 import { cycleFocus } from "./focus.js";
 
 type Focus = FistValue | "submit";
@@ -18,10 +18,8 @@ export function Collect({ includeZero, onSubmit }: { includeZero: boolean; onSub
     const [focus, setFocus] = useState<Focus>(() => visible[0]!);
 
     const submit = useCallback(() => {
-        const counts = Object.fromEntries(
-            FIST_VALUES.map((v) => [v, parseInt(values[v] || "0", 10) || 0]),
-        ) as VoteCounts;
-        onSubmit(counts);
+        const raw = Object.fromEntries(FIST_VALUES.map((v) => [v, values[v] || "0"]));
+        onSubmit(decodeVoteCounts(raw));
     }, [values, onSubmit]);
 
     useInput((input, key) => {
