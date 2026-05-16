@@ -38,9 +38,7 @@ export function Countdown({ onDone, onCancel }: { onDone: () => void; onCancel: 
     const [remaining, setRemaining] = useState(START_FROM);
     const fired = useRef(false);
     const onDoneRef = useRef(onDone);
-    const onCancelRef = useRef(onCancel);
     onDoneRef.current = onDone;
-    onCancelRef.current = onCancel;
 
     const fire = (fn: () => void) => {
         if (fired.current) return;
@@ -49,15 +47,12 @@ export function Countdown({ onDone, onCancel }: { onDone: () => void; onCancel: 
     };
 
     useEffect(() => {
-        start({
-            onTick: setRemaining,
-            onDone: () => fire(onDoneRef.current),
-        });
+        start({ onTick: setRemaining, onDone: () => fire(onDoneRef.current) });
         return () => start(Atom.Interrupt);
     }, [start]);
 
     useInput((_input, key) => {
-        if (key.escape) fire(onCancelRef.current);
+        if (key.escape) fire(onCancel);
     });
 
     return (
