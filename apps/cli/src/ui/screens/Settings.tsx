@@ -37,10 +37,21 @@ function Choice({ left, right, selected }: { left: string; right: string; select
     );
 }
 
-export function Settings({ settings, onSave }: { settings: SettingsT; onSave: (next: SettingsT) => void }) {
+export function Settings({
+    settings,
+    onSave,
+    onCancel,
+}: {
+    settings: SettingsT;
+    onSave: (next: SettingsT) => void;
+    onCancel: () => void;
+}) {
     const { columns, rows } = useTerminalSize();
     const [focus, setFocus] = useState<Row>("mode");
     const [draft, setDraft] = useState<SettingsT>(settings);
+    const [confirming, setConfirming] = useState(false);
+
+    const dirty = draft.mode !== settings.mode || draft.includeZero !== settings.includeZero;
 
     const toggleFocused = () => {
         if (focus === "mode") {
@@ -51,8 +62,20 @@ export function Settings({ settings, onSave }: { settings: SettingsT; onSave: (n
     };
 
     useInput((input, key) => {
+        if (confirming) {
+            if (input === "y" || input === "Y") {
+                onCancel();
+                return;
+            }
+            if (input === "n" || input === "N" || key.escape) setConfirming(false);
+            return;
+        }
         Match.value({ input, key }).pipe(
-            Match.whenOr({ key: { escape: true } }, { key: { return: true } }, () => onSave(draft)),
+            Match.when({ key: { return: true } }, () => onSave(draft)),
+            Match.when({ key: { escape: true } }, () => {
+                if (dirty) setConfirming(true);
+                else onCancel();
+            }),
             Match.whenOr({ key: { downArrow: true } }, { key: { tab: true } }, () =>
                 setFocus(cycleFocus(ROWS, focus, 1)),
             ),
@@ -63,6 +86,19 @@ export function Settings({ settings, onSave }: { settings: SettingsT; onSave: (n
             Match.orElse(() => {}),
         );
     });
+
+    if (confirming) {
+        return (
+            <Box width={columns} height={rows} flexDirection="column" justifyContent="center" alignItems="center">
+                <Box borderStyle="round" borderColor="yellow" paddingX={2} paddingY={1} flexDirection="column" alignItems="center">
+                    <Text bold>Discard unsaved settings?</Text>
+                    <Box marginTop={1}>
+                        <Text dimColor>y to confirm · n or Esc to cancel</Text>
+                    </Box>
+                </Box>
+            </Box>
+        );
+    }
 
     return (
         <Box width={columns} height={rows} flexDirection="column" justifyContent="center" alignItems="center">
@@ -91,7 +127,7 @@ export function Settings({ settings, onSave }: { settings: SettingsT; onSave: (n
             </Box>
             <Box marginTop={3} flexDirection="column" alignItems="center">
                 <Text dimColor>↑↓ to move · ←→/space to toggle</Text>
-                <Text dimColor>Enter/Esc to save & return</Text>
+                <Text dimColor>Enter to save · Esc to cancel</Text>
             </Box>
         </Box>
     );

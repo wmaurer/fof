@@ -65,6 +65,7 @@ export function App() {
                             saveSettings(next);
                             setScreen(Screen.Opening());
                         }}
+                        onCancel={() => setScreen(Screen.Opening())}
                     />
                 )),
                 Match.exhaustive,
