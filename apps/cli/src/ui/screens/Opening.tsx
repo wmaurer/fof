@@ -1,11 +1,12 @@
-import { Box, Text, useInput, useWindowSize } from "ink";
+import { Box, Text, useInput } from "ink";
 
 import { renderBanner } from "../banner.js";
+import { useTerminalSize } from "../terminal-size.js";
 
 const BANNER = renderBanner("FIST OF FIVE");
 
 export function Opening({ onStart, onSettings }: { onStart: () => void; onSettings: () => void }) {
-    const { columns, rows } = useWindowSize();
+    const { columns, rows } = useTerminalSize();
 
     useInput((input, key) => {
         if (input === "?") {

@@ -1,10 +1,11 @@
 import { useAtomSet } from "@effect/atom-react";
 import { Array, Effect, Layer } from "effect";
 import { Atom } from "effect/unstable/reactivity";
-import { Box, Text, useInput, useWindowSize } from "ink";
+import { Box, Text, useInput } from "ink";
 import { useEffect, useRef, useState } from "react";
 
 import { renderBanner } from "../banner.js";
+import { useTerminalSize } from "../terminal-size.js";
 
 const START_FROM = 3;
 const TICK = "1 second";
@@ -32,7 +33,7 @@ const tickerAtom = countdownRuntime.fn((arg: TickerArg) =>
 );
 
 export function Countdown({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
-    const { columns, rows } = useWindowSize();
+    const { columns, rows } = useTerminalSize();
     const start = useAtomSet(tickerAtom);
     const [remaining, setRemaining] = useState(START_FROM);
     const fired = useRef(false);

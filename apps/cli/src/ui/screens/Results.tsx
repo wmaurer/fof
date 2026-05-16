@@ -1,6 +1,7 @@
 import { Array, Match } from "effect";
-import { Box, Text, useInput, useWindowSize } from "ink";
+import { Box, Text, useInput } from "ink";
 
+import { useTerminalSize } from "../terminal-size.js";
 import { CONSENSUS_THRESHOLD, displayValues, type Settings, type VoteCounts } from "../types.js";
 import { computeStatus } from "./results-status.js";
 
@@ -8,7 +9,7 @@ const MAX_BAR_WIDTH = 30;
 const BAR_CHAR = "█";
 
 export function Results({ counts, settings, onDone }: { counts: VoteCounts; settings: Settings; onDone: () => void }) {
-    const { columns, rows } = useWindowSize();
+    const { columns, rows } = useTerminalSize();
 
     useInput((input, key) => {
         if (key.return || input === " ") onDone();

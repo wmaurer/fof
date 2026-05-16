@@ -1,7 +1,8 @@
 import { Match } from "effect";
-import { Box, Text, useInput, useWindowSize } from "ink";
+import { Box, Text, useInput } from "ink";
 import { useState } from "react";
 
+import { useTerminalSize } from "../terminal-size.js";
 import { cycleFocus } from "./focus.js";
 
 import type { Settings as SettingsT } from "../types.js";
@@ -32,7 +33,7 @@ function Choice({ left, right, selected }: { left: string; right: string; select
 }
 
 export function Settings({ settings, onSave }: { settings: SettingsT; onSave: (next: SettingsT) => void }) {
-    const { columns, rows } = useWindowSize();
+    const { columns, rows } = useTerminalSize();
     const [focus, setFocus] = useState<Row>("mode");
     const [draft, setDraft] = useState<SettingsT>(settings);
 

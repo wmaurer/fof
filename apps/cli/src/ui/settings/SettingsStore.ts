@@ -31,12 +31,12 @@ export class SettingsStore extends Context.Service<SettingsStore>()("@wmaurer/fo
             ),
         );
 
-        const save = (settings: Settings): Effect.Effect<void> =>
+        const save = (settings: Settings) =>
             Effect.gen(function* () {
                 yield* fs.makeDirectory(settingsDir, { recursive: true });
                 const json = yield* encodeJson(settings);
                 yield* fs.writeFileString(settingsFile, json);
-            }).pipe(Effect.catchCause((cause) => Effect.logError("settings save failed", cause)));
+            });
 
         return { load, save } as const;
     }),

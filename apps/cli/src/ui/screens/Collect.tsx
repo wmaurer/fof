@@ -1,7 +1,8 @@
 import { Match } from "effect";
-import { Box, Text, useInput, useWindowSize } from "ink";
+import { Box, Text, useInput } from "ink";
 import { useCallback, useMemo, useState } from "react";
 
+import { useTerminalSize } from "../terminal-size.js";
 import { FIST_VALUES, FIST_WORDS, decodeVoteCounts, displayValues, type FistValue, type VoteCounts } from "../types.js";
 import { cycleFocus } from "./focus.js";
 
@@ -11,7 +12,7 @@ const initialValues = (): Record<FistValue, string> =>
     Object.fromEntries(FIST_VALUES.map((v) => [v, ""])) as Record<FistValue, string>;
 
 export function Collect({ includeZero, onSubmit }: { includeZero: boolean; onSubmit: (counts: VoteCounts) => void }) {
-    const { columns, rows } = useWindowSize();
+    const { columns, rows } = useTerminalSize();
     const [values, setValues] = useState<Record<FistValue, string>>(initialValues);
     const visible = useMemo(() => displayValues(includeZero), [includeZero]);
     const focusOrder = useMemo<ReadonlyArray<Focus>>(() => [...visible, "submit"], [visible]);

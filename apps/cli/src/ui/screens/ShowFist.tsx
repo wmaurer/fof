@@ -1,7 +1,9 @@
-import { Box, Text, useInput, useWindowSize } from "ink";
+import { Box, Text, useInput } from "ink";
+
+import { useTerminalSize } from "../terminal-size.js";
 
 export function ShowFist({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
-    const { columns, rows } = useWindowSize();
+    const { columns, rows } = useTerminalSize();
 
     useInput((input, key) => {
         if (key.escape) onCancel();
