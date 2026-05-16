@@ -80,7 +80,11 @@ export function App() {
             <ShowFist onDone={() => setScreen(Screen.Collect())} onCancel={() => setScreen(Screen.Opening())} />
         )),
         Match.tag("Collect", () => (
-            <Collect includeZero={settings.includeZero} onSubmit={(counts) => setScreen(Screen.Results({ counts }))} />
+            <Collect
+                includeZero={settings.includeZero}
+                onSubmit={(counts) => setScreen(Screen.Results({ counts }))}
+                onCancel={() => setScreen(Screen.Opening())}
+            />
         )),
         Match.tag("Results", ({ counts }) => (
             <Results counts={counts} settings={settings} onDone={() => setScreen(Screen.Opening())} />

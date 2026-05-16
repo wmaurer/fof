@@ -10,25 +10,30 @@ import type { Settings as SettingsT } from "../types.js";
 type Row = "mode" | "veto";
 const ROWS: ReadonlyArray<Row> = ["mode", "veto"];
 
+const CHOICE_LEFT_WIDTH = 12;
+
 function Choice({ left, right, selected }: { left: string; right: string; selected: "left" | "right" }) {
     return (
-        <Text>
-            <Text
-                bold={selected === "left"}
-                color={selected === "left" ? "green" : undefined}
-                dimColor={selected !== "left"}
-            >
-                {left}
-            </Text>
-            {"   "}
-            <Text
-                bold={selected === "right"}
-                color={selected === "right" ? "green" : undefined}
-                dimColor={selected !== "right"}
-            >
-                {right}
-            </Text>
-        </Text>
+        <Box flexDirection="row">
+            <Box width={CHOICE_LEFT_WIDTH}>
+                <Text
+                    bold={selected === "left"}
+                    color={selected === "left" ? "green" : undefined}
+                    dimColor={selected !== "left"}
+                >
+                    {left}
+                </Text>
+            </Box>
+            <Box>
+                <Text
+                    bold={selected === "right"}
+                    color={selected === "right" ? "green" : undefined}
+                    dimColor={selected !== "right"}
+                >
+                    {right}
+                </Text>
+            </Box>
+        </Box>
     );
 }
 
@@ -68,7 +73,7 @@ export function Settings({ settings, onSave }: { settings: SettingsT; onSave: (n
             </Box>
             <Box flexDirection="column">
                 <Box flexDirection="row" alignItems="center">
-                    <Box width={22} justifyContent="flex-end" marginRight={2}>
+                    <Box width={22} marginRight={2}>
                         <Text bold={focus === "mode"} color={focus === "mode" ? "cyan" : undefined}>
                             {focus === "mode" ? "▸ " : "  "}Mode
                         </Text>
@@ -76,7 +81,7 @@ export function Settings({ settings, onSave }: { settings: SettingsT; onSave: (n
                     <Choice left="consensus" right="poll" selected={draft.mode === "consensus" ? "left" : "right"} />
                 </Box>
                 <Box flexDirection="row" alignItems="center" marginTop={1}>
-                    <Box width={22} justifyContent="flex-end" marginRight={2}>
+                    <Box width={22} marginRight={2}>
                         <Text bold={focus === "veto"} color={focus === "veto" ? "cyan" : undefined}>
                             {focus === "veto" ? "▸ " : "  "}Include 0 (veto)
                         </Text>

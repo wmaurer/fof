@@ -13,13 +13,22 @@ type Focus = FistValue | "submit";
 const initialValues = (): Record<FistValue, string> =>
     Object.fromEntries(FIST_VALUES.map((v) => [v, ""])) as Record<FistValue, string>;
 
-export function Collect({ includeZero, onSubmit }: { includeZero: boolean; onSubmit: (counts: VoteCounts) => void }) {
+export function Collect({
+    includeZero,
+    onSubmit,
+    onCancel,
+}: {
+    includeZero: boolean;
+    onSubmit: (counts: VoteCounts) => void;
+    onCancel: () => void;
+}) {
     const { columns, rows } = useTerminalSize();
     const showToast = useAtomSet(showToastAtom);
     const [values, setValues] = useState<Record<FistValue, string>>(initialValues);
     const visible = useMemo(() => displayValues(includeZero), [includeZero]);
     const focusOrder = useMemo<ReadonlyArray<Focus>>(() => [...visible, "submit"], [visible]);
     const [focus, setFocus] = useState<Focus>(() => visible[0]!);
+    const [confirming, setConfirming] = useState(false);
 
     const submit = useCallback(() => {
         const raw = Object.fromEntries(FIST_VALUES.map((v) => [v, values[v] || "0"]));
@@ -32,6 +41,18 @@ export function Collect({ includeZero, onSubmit }: { includeZero: boolean; onSub
     }, [values, onSubmit, showToast]);
 
     useInput((input, key) => {
+        if (confirming) {
+            if (input === "y" || input === "Y") {
+                onCancel();
+                return;
+            }
+            if (input === "n" || input === "N" || key.escape) setConfirming(false);
+            return;
+        }
+        if (key.escape) {
+            setConfirming(true);
+            return;
+        }
         const navigated = Match.value({ key }).pipe(
             Match.when({ key: { tab: true } }, ({ key: k }) => {
                 setFocus(cycleFocus(focusOrder, focus, k.shift ? -1 : 1));
@@ -68,6 +89,19 @@ export function Collect({ includeZero, onSubmit }: { includeZero: boolean; onSub
         }
     });
 
+    if (confirming) {
+        return (
+            <Box width={columns} height={rows} flexDirection="column" justifyContent="center" alignItems="center">
+                <Box borderStyle="round" borderColor="yellow" paddingX={2} paddingY={1} flexDirection="column" alignItems="center">
+                    <Text bold>Discard votes and return to home?</Text>
+                    <Box marginTop={1}>
+                        <Text dimColor>y to confirm · n or Esc to cancel</Text>
+                    </Box>
+                </Box>
+            </Box>
+        );
+    }
+
     return (
         <Box width={columns} height={rows} flexDirection="column" justifyContent="center" alignItems="center">
             <Box marginBottom={2}>
@@ -89,7 +123,7 @@ export function Collect({ includeZero, onSubmit }: { includeZero: boolean; onSub
                 </Box>
             </Box>
             <Box marginTop={2}>
-                <Text dimColor>Tab / ↑↓ to move · digits to type · Enter to submit</Text>
+                <Text dimColor>Tab / ↑↓ to move · digits to type · Enter to submit · Esc to cancel</Text>
             </Box>
         </Box>
     );
