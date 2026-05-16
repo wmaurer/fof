@@ -5,7 +5,7 @@ import { DEFAULT_SETTINGS, SettingsSchema, type Settings } from "../types.js";
 
 const SettingsFromJson = Schema.fromJsonString(SettingsSchema);
 
-export class SettingsStore extends Context.Service<SettingsStore>()("@fof/cli/ui/settings/SettingsStore", {
+export class SettingsStore extends Context.Service<SettingsStore>()("@wmaurer/fof/ui/settings/SettingsStore", {
     make: Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;

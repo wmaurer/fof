@@ -1,21 +1,35 @@
 {
-    "name": "@fof/cli",
-    "private": true,
+    "name": "@wmaurer/fof",
+    "version": "0.1.0",
+    "description": "fist of five — group decision-making in the terminal",
     "type": "module",
+    "bin": {
+        "fof": "./dist/fof.mjs"
+    },
+    "files": [
+        "dist"
+    ],
+    "engines": {
+        "node": ">=20"
+    },
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
+    },
     "scripts": {
         "start": "tsx src/index.tsx",
-        "dev": "tsx watch src/index.tsx"
-    },
-    "dependencies": {
-        "@effect/atom-react": "4.0.0-beta.66",
-        "@effect/platform-node": "4.0.0-beta.66",
-        "effect": "4.0.0-beta.66",
-        "ink": "^7.0.3",
-        "react": "^19.2.6"
+        "dev": "tsx watch src/index.tsx",
+        "build": "tsdown"
     },
     "devDependencies": {
+        "@effect/atom-react": "4.0.0-beta.66",
+        "@effect/platform-node": "4.0.0-beta.66",
         "@types/node": "^25.8.0",
         "@types/react": "^19.2.14",
+        "effect": "4.0.0-beta.66",
+        "ink": "^7.0.3",
+        "react": "^19.2.6",
+        "tsdown": "latest",
         "tsx": "^4.22.0"
     }
 }
