@@ -1,8 +1,7 @@
-import { useAtomValue } from "@effect/atom-react";
+import { useAtomSubscribe, useAtomValue } from "@effect/atom-react";
 import { Array, Duration, Effect, Stream } from "effect";
-import { Atom } from "effect/unstable/reactivity";
+import { AsyncResult, Atom } from "effect/unstable/reactivity";
 import { Box, Text, useInput } from "ink";
-import { useEffect } from "react";
 
 import { renderBanner } from "../banner.js";
 import { useTerminalSize } from "../terminal-size.js";
@@ -22,12 +21,11 @@ const tickerAtom = Atom.make(tickerStream, { initialValue: START_FROM });
 export function Countdown({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
     const { columns, rows } = useTerminalSize();
     const ticker = useAtomValue(tickerAtom);
-    const remaining = ticker._tag === "Success" ? ticker.value : START_FROM;
-    const completed = ticker._tag === "Success" && !ticker.waiting;
+    const remaining = AsyncResult.getOrElse(ticker, () => START_FROM);
 
-    useEffect(() => {
-        if (completed) onDone();
-    }, [completed, onDone]);
+    useAtomSubscribe(tickerAtom, (t) => {
+        if (AsyncResult.isSuccess(t) && !t.waiting) onDone();
+    });
 
     useInput((_input, key) => {
         if (key.escape) onCancel();

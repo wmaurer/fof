@@ -1,9 +1,9 @@
-import { useAtomSet, useAtomValue } from "@effect/atom-react";
+import { useAtomSet, useAtomSubscribe, useAtomValue } from "@effect/atom-react";
 import { Match } from "effect";
+import { AsyncResult } from "effect/unstable/reactivity";
 import { Box, Text, useApp, useInput, useWindowSize } from "ink";
-import { useEffect } from "react";
 
-import { Screen, screenAtom, toastAtom } from "./app-atoms.js";
+import { Screen, screenAtom, showToastAtom, toastAtom } from "./app-atoms.js";
 import { Collect } from "./screens/Collect.js";
 import { Countdown } from "./screens/Countdown.js";
 import { Opening } from "./screens/Opening.js";
@@ -13,7 +13,6 @@ import { ShowFist } from "./screens/ShowFist.js";
 import { loadSettingsAtom, saveSettingsAtom, settingsAtom } from "./settings/atoms.js";
 import { TerminalSizeProvider, useTerminalSize } from "./terminal-size.js";
 
-const TOAST_MS = 4000;
 const TOAST_ROWS = 3;
 
 function SettingsLoading() {
@@ -39,23 +38,15 @@ export function App() {
     const setScreen = useAtomSet(screenAtom);
     const loadResult = useAtomValue(loadSettingsAtom);
     const settings = useAtomValue(settingsAtom);
-    const saveResult = useAtomValue(saveSettingsAtom);
     const saveSettings = useAtomSet(saveSettingsAtom);
     const toast = useAtomValue(toastAtom);
-    const setToast = useAtomSet(toastAtom);
+    const showToast = useAtomSet(showToastAtom);
     const native = useWindowSize();
     const settingsLoaded = loadResult._tag !== "Initial";
 
-    useEffect(() => {
-        if (saveResult._tag === "Failure") setToast("Settings save failed");
-    }, [saveResult, setToast]);
-
-    useEffect(() => {
-        if (toast === null) return;
-        // @effect-diagnostics-next-line globalTimers:off
-        const t = setTimeout(() => setToast(null), TOAST_MS);
-        return () => clearTimeout(t);
-    }, [toast, setToast]);
+    useAtomSubscribe(saveSettingsAtom, (t) => {
+        if (AsyncResult.isFailure(t)) showToast("Settings save failed");
+    });
 
     useInput((input) => {
         if (input === "q") exit();
