@@ -1,31 +1,11 @@
-import { Array, Data, Match } from "effect";
+import { Array, Match } from "effect";
 import { Box, Text, useInput, useWindowSize } from "ink";
 
 import { CONSENSUS_THRESHOLD, displayValues, type Settings, type VoteCounts } from "../types.js";
+import { computeStatus } from "./results-status.js";
 
 const MAX_BAR_WIDTH = 30;
 const BAR_CHAR = "█";
-
-type ConsensusStatus = Data.TaggedEnum<{
-    Hidden: {};
-    Blocked: { readonly vetoes: number };
-    Consensus: { readonly threshold: number };
-    NeedsDiscussion: { readonly lowVotes: number; readonly threshold: number };
-}>;
-
-const ConsensusStatus = Data.taggedEnum<ConsensusStatus>();
-
-const computeStatus = (params: {
-    total: number;
-    mode: Settings["mode"];
-    vetoes: number;
-    lowVotes: number;
-}): ConsensusStatus => {
-    if (params.total === 0 || params.mode === "poll") return ConsensusStatus.Hidden();
-    if (params.vetoes > 0) return ConsensusStatus.Blocked({ vetoes: params.vetoes });
-    if (params.lowVotes === 0) return ConsensusStatus.Consensus({ threshold: CONSENSUS_THRESHOLD });
-    return ConsensusStatus.NeedsDiscussion({ lowVotes: params.lowVotes, threshold: CONSENSUS_THRESHOLD });
-};
 
 export function Results({ counts, settings, onDone }: { counts: VoteCounts; settings: Settings; onDone: () => void }) {
     const { columns, rows } = useWindowSize();

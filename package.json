@@ -33,7 +33,8 @@
             "effect": "4.0.0-beta.66",
             "@effect/atom-react": "4.0.0-beta.66",
             "@effect/platform-node": "4.0.0-beta.66",
-            "@effect/platform-node-shared": "4.0.0-beta.66"
+            "@effect/platform-node-shared": "4.0.0-beta.66",
+            "@effect/vitest": "4.0.0-beta.66"
         }
     }
 }
