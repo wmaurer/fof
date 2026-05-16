@@ -1,4 +1,5 @@
 import { assert, describe, it } from "@effect/vitest";
+import { Result } from "effect";
 
 import { decodeVoteCounts } from "../src/ui/types.js";
 
@@ -14,24 +15,27 @@ const counts = (overrides: Partial<Record<"0" | "1" | "2" | "3" | "4" | "5", str
 
 describe("decodeVoteCounts", () => {
     it("decodes numeric strings into integers keyed by fist value", () => {
-        const out = decodeVoteCounts(counts({ "0": "0", "1": "1", "2": "2", "3": "3", "4": "4", "5": "5" }));
-        assert.deepStrictEqual(out, { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 });
+        const result = decodeVoteCounts(counts({ "0": "0", "1": "1", "2": "2", "3": "3", "4": "4", "5": "5" }));
+        assert.isTrue(Result.isSuccess(result), "happy-path decode must succeed");
+        if (Result.isSuccess(result)) {
+            assert.deepStrictEqual(result.success, { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 });
+        }
     });
 
-    it("rejects non-integer counts", () => {
-        assert.throws(() => decodeVoteCounts(counts({ "1": "1.5" })));
+    it("fails on non-integer counts", () => {
+        assert.isTrue(Result.isFailure(decodeVoteCounts(counts({ "1": "1.5" }))));
     });
 
-    it("rejects negative counts", () => {
-        assert.throws(() => decodeVoteCounts(counts({ "0": "-1" })));
+    it("fails on negative counts", () => {
+        assert.isTrue(Result.isFailure(decodeVoteCounts(counts({ "0": "-1" }))));
     });
 
-    it("rejects counts above 999", () => {
-        assert.throws(() => decodeVoteCounts(counts({ "0": "1000" })));
+    it("fails on counts above 999", () => {
+        assert.isTrue(Result.isFailure(decodeVoteCounts(counts({ "0": "1000" }))));
     });
 
-    it("rejects missing keys", () => {
+    it("fails on missing keys", () => {
         const { "5": _omit, ...partial } = counts({});
-        assert.throws(() => decodeVoteCounts(partial));
+        assert.isTrue(Result.isFailure(decodeVoteCounts(partial)));
     });
 });

@@ -28,7 +28,7 @@ export const VoteCountsSchema = Schema.Struct({
 
 export type VoteCounts = Schema.Schema.Type<typeof VoteCountsSchema>;
 
-export const decodeVoteCounts = Schema.decodeUnknownSync(VoteCountsSchema);
+export const decodeVoteCounts = Schema.decodeUnknownResult(VoteCountsSchema);
 
 export const SettingsSchema = Schema.Struct({
     mode: Schema.Literals(["consensus", "poll"]),

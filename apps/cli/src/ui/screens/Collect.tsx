@@ -1,7 +1,9 @@
-import { Match } from "effect";
+import { useAtomSet } from "@effect/atom-react";
+import { Match, Result } from "effect";
 import { Box, Text, useInput } from "ink";
 import { useCallback, useMemo, useState } from "react";
 
+import { toastAtom } from "../app-atoms.js";
 import { useTerminalSize } from "../terminal-size.js";
 import { FIST_VALUES, FIST_WORDS, decodeVoteCounts, displayValues, type FistValue, type VoteCounts } from "../types.js";
 import { cycleFocus } from "./focus.js";
@@ -13,6 +15,7 @@ const initialValues = (): Record<FistValue, string> =>
 
 export function Collect({ includeZero, onSubmit }: { includeZero: boolean; onSubmit: (counts: VoteCounts) => void }) {
     const { columns, rows } = useTerminalSize();
+    const setToast = useAtomSet(toastAtom);
     const [values, setValues] = useState<Record<FistValue, string>>(initialValues);
     const visible = useMemo(() => displayValues(includeZero), [includeZero]);
     const focusOrder = useMemo<ReadonlyArray<Focus>>(() => [...visible, "submit"], [visible]);
@@ -20,8 +23,13 @@ export function Collect({ includeZero, onSubmit }: { includeZero: boolean; onSub
 
     const submit = useCallback(() => {
         const raw = Object.fromEntries(FIST_VALUES.map((v) => [v, values[v] || "0"]));
-        onSubmit(decodeVoteCounts(raw));
-    }, [values, onSubmit]);
+        const result = decodeVoteCounts(raw);
+        if (Result.isFailure(result)) {
+            setToast("Internal error: invalid vote counts");
+            return;
+        }
+        onSubmit(result.success);
+    }, [values, onSubmit, setToast]);
 
     useInput((input, key) => {
         const navigated = Match.value({ key }).pipe(

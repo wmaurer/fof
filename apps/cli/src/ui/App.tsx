@@ -1,9 +1,9 @@
 import { useAtomSet, useAtomValue } from "@effect/atom-react";
 import { Match } from "effect";
 import { Box, Text, useApp, useInput, useWindowSize } from "ink";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { Screen, screenAtom } from "./app-atoms.js";
+import { Screen, screenAtom, toastAtom } from "./app-atoms.js";
 import { Collect } from "./screens/Collect.js";
 import { Countdown } from "./screens/Countdown.js";
 import { Opening } from "./screens/Opening.js";
@@ -13,8 +13,8 @@ import { ShowFist } from "./screens/ShowFist.js";
 import { loadSettingsAtom, saveSettingsAtom, settingsAtom } from "./settings/atoms.js";
 import { TerminalSizeProvider, useTerminalSize } from "./terminal-size.js";
 
-const SAVE_ERROR_TOAST_MS = 4000;
-const SAVE_ERROR_TOAST_ROWS = 3;
+const TOAST_MS = 4000;
+const TOAST_ROWS = 3;
 
 function SettingsLoading() {
     const { columns, rows } = useTerminalSize();
@@ -25,10 +25,10 @@ function SettingsLoading() {
     );
 }
 
-function SaveErrorToast() {
+function Toast({ message }: { message: string }) {
     return (
         <Box borderStyle="round" borderColor="red" paddingX={1}>
-            <Text color="red">Settings save failed</Text>
+            <Text color="red">{message}</Text>
         </Box>
     );
 }
@@ -41,19 +41,21 @@ export function App() {
     const settings = useAtomValue(settingsAtom);
     const saveResult = useAtomValue(saveSettingsAtom);
     const saveSettings = useAtomSet(saveSettingsAtom);
+    const toast = useAtomValue(toastAtom);
+    const setToast = useAtomSet(toastAtom);
     const native = useWindowSize();
     const settingsLoaded = loadResult._tag !== "Initial";
-    const [showSaveError, setShowSaveError] = useState(false);
 
     useEffect(() => {
-        if (saveResult._tag === "Failure") {
-            setShowSaveError(true);
-            // @effect-diagnostics-next-line globalTimers:off
-            const t = setTimeout(() => setShowSaveError(false), SAVE_ERROR_TOAST_MS);
-            return () => clearTimeout(t);
-        }
-        if (saveResult._tag === "Success") setShowSaveError(false);
-    }, [saveResult]);
+        if (saveResult._tag === "Failure") setToast("Settings save failed");
+    }, [saveResult, setToast]);
+
+    useEffect(() => {
+        if (toast === null) return;
+        // @effect-diagnostics-next-line globalTimers:off
+        const t = setTimeout(() => setToast(null), TOAST_MS);
+        return () => clearTimeout(t);
+    }, [toast, setToast]);
 
     useInput((input) => {
         if (input === "q") exit();
@@ -94,11 +96,11 @@ export function App() {
         Match.exhaustive,
     );
 
-    if (!showSaveError) return screenNode;
-    const reducedRows = Math.max(0, native.rows - SAVE_ERROR_TOAST_ROWS);
+    if (toast === null) return screenNode;
+    const reducedRows = Math.max(0, native.rows - TOAST_ROWS);
     return (
         <Box flexDirection="column" width={native.columns} height={native.rows}>
-            <SaveErrorToast />
+            <Toast message={toast} />
             <TerminalSizeProvider value={{ columns: native.columns, rows: reducedRows }}>
                 {screenNode}
             </TerminalSizeProvider>

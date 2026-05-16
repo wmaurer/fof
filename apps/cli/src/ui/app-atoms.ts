@@ -15,3 +15,5 @@ export type Screen = Data.TaggedEnum<{
 export const Screen = Data.taggedEnum<Screen>();
 
 export const screenAtom: Atom.Writable<Screen> = Atom.make<Screen>(Screen.Opening());
+
+export const toastAtom: Atom.Writable<string | null> = Atom.make<string | null>(null);
