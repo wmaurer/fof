@@ -1,7 +1,7 @@
 import { Data, Duration, Effect, Layer } from "effect";
 import { Atom } from "effect/unstable/reactivity";
 
-import { type VoteCounts } from "./types.js";
+import { type VoteCounts } from "./fist.js";
 
 export type Screen = Data.TaggedEnum<{
     Opening: {};

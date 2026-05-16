@@ -1,7 +1,7 @@
 import { assert, describe, it } from "@effect/vitest";
 
 import { computeStatus, ConsensusStatus } from "../../src/ui/screens/results-status.js";
-import { CONSENSUS_THRESHOLD } from "../../src/ui/types.js";
+import { CONSENSUS_THRESHOLD } from "../../src/ui/fist.js";
 
 describe("computeStatus", () => {
     it("is Hidden when no votes have been cast", () => {

@@ -1,13 +1,11 @@
-import { useAtomSet } from "@effect/atom-react";
-import { Result } from "effect";
+import { Array } from "effect";
 import { Box, Text, useInput } from "ink";
 import TextInput from "ink-text-input";
 import { useState } from "react";
 
-import { showToastAtom } from "../app-atoms.js";
 import { Confirm } from "../Confirm.js";
 import { useTerminalSize } from "../terminal-size.js";
-import { FIST_VALUES, FIST_WORDS, decodeVoteCounts, displayValues, type FistValue, type VoteCounts } from "../types.js";
+import { FIST_VALUES, FIST_WORDS, decodeVoteCounts, displayValues, type FistValue, type VoteCounts } from "../fist.js";
 import { cycleFocus } from "./focus.js";
 
 type Focus = FistValue | "submit";
@@ -25,21 +23,15 @@ export function Collect({
     onCancel: () => void;
 }) {
     const { columns, rows } = useTerminalSize();
-    const showToast = useAtomSet(showToastAtom);
     const [values, setValues] = useState<Record<FistValue, string>>(initialValues);
     const visible = displayValues(includeZero);
-    const focusOrder: ReadonlyArray<Focus> = [...visible, "submit"];
-    const [focus, setFocus] = useState<Focus>(() => visible[0]!);
+    const focusOrder: Array.NonEmptyReadonlyArray<Focus> = Array.append(visible, "submit");
+    const [focus, setFocus] = useState<Focus>(() => visible[0]);
     const [confirming, setConfirming] = useState(false);
 
     const submit = () => {
         const raw = Object.fromEntries(FIST_VALUES.map((v) => [v, values[v] || "0"]));
-        const result = decodeVoteCounts(raw);
-        if (Result.isFailure(result)) {
-            showToast("Internal error: invalid vote counts");
-            return;
-        }
-        onSubmit(result.success);
+        onSubmit(decodeVoteCounts(raw));
     };
 
     const advanceFocus = (from: Focus) => {

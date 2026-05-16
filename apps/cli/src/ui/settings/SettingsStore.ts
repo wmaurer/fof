@@ -1,7 +1,7 @@
 import { Config, Context, Effect, FileSystem, Layer, Path } from "effect";
 import * as Schema from "effect/Schema";
 
-import { DEFAULT_SETTINGS, SettingsSchema, type Settings } from "../types.js";
+import { DEFAULT_SETTINGS, SettingsSchema, type Settings } from "./model.js";
 
 const SettingsFromJson = Schema.fromJsonString(SettingsSchema);
 

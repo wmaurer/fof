@@ -2,7 +2,7 @@ import { NodeFileSystem, NodePath } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
 import { Atom } from "effect/unstable/reactivity";
 
-import { DEFAULT_SETTINGS, type Settings } from "../types.js";
+import { DEFAULT_SETTINGS, type Settings } from "./model.js";
 import { SettingsStore } from "./SettingsStore.js";
 
 const settingsRuntime = Atom.runtime(

@@ -28,17 +28,7 @@ export const VoteCountsSchema = Schema.Struct({
 
 export type VoteCounts = Schema.Schema.Type<typeof VoteCountsSchema>;
 
-export const decodeVoteCounts = Schema.decodeUnknownResult(VoteCountsSchema);
+export const decodeVoteCounts = Schema.decodeUnknownSync(VoteCountsSchema);
 
-export const SettingsSchema = Schema.Struct({
-    mode: Schema.Literals(["consensus", "poll"]),
-    includeZero: Schema.Boolean,
-});
-
-export type Settings = Schema.Schema.Type<typeof SettingsSchema>;
-export type Mode = Settings["mode"];
-
-export const DEFAULT_SETTINGS: Settings = { mode: "consensus", includeZero: false };
-
-export const displayValues = (includeZero: boolean): ReadonlyArray<FistValue> =>
-    includeZero ? FIST_VALUES : Array.filter(FIST_VALUES, (v): v is Exclude<FistValue, 0> => v !== 0);
+export const displayValues = (includeZero: boolean): Array.NonEmptyReadonlyArray<FistValue> =>
+    includeZero ? FIST_VALUES : [1, 2, 3, 4, 5];

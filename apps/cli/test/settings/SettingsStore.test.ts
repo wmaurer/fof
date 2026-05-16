@@ -2,7 +2,7 @@ import { assert, describe, it } from "@effect/vitest";
 import { ConfigProvider, Effect, FileSystem, Layer, Path, PlatformError } from "effect";
 
 import { SettingsStore } from "../../src/ui/settings/SettingsStore.js";
-import { DEFAULT_SETTINGS, type Settings } from "../../src/ui/types.js";
+import { DEFAULT_SETTINGS, type Settings } from "../../src/ui/settings/model.js";
 
 const SETTINGS_FILE = "/tmp/fof-test/.config/fof/settings.json";
 

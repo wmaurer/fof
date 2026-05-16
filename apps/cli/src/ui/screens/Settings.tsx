@@ -6,10 +6,10 @@ import { Confirm } from "../Confirm.js";
 import { useTerminalSize } from "../terminal-size.js";
 import { cycleFocus } from "./focus.js";
 
-import type { Settings as SettingsT } from "../types.js";
+import type { Settings as SettingsT } from "../settings/model.js";
 
 type Row = "mode" | "veto";
-const ROWS: ReadonlyArray<Row> = ["mode", "veto"];
+const ROWS = ["mode", "veto"] as const satisfies ReadonlyArray<Row>;
 
 const CHOICE_LEFT_WIDTH = 12;
 

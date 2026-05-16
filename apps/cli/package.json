@@ -19,7 +19,8 @@
     "scripts": {
         "start": "tsx src/index.tsx",
         "dev": "tsx watch src/index.tsx",
-        "build": "tsdown"
+        "build": "tsdown",
+        "prepublishOnly": "pnpm build"
     },
     "devDependencies": {
         "@effect/atom-react": "4.0.0-beta.66",

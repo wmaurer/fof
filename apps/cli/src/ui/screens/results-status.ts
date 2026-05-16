@@ -1,6 +1,7 @@
 import { Data } from "effect";
 
-import { CONSENSUS_THRESHOLD, type Settings } from "../types.js";
+import { CONSENSUS_THRESHOLD } from "../fist.js";
+import { type Settings } from "../settings/model.js";
 
 export type ConsensusStatus = Data.TaggedEnum<{
     Hidden: {};
