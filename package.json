@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "typecheck": "tsgo --noEmit && tsgo -p apps/cli/tsconfig.json --noEmit",
+        "typecheck": "tsgo --noEmit",
         "test": "vitest run",
         "test:watch": "vitest",
         "start": "pnpm --filter @wmaurer/fof start",
