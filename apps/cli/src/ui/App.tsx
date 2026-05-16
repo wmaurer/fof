@@ -42,7 +42,6 @@ export function App() {
     const toast = useAtomValue(toastAtom);
     const showToast = useAtomSet(showToastAtom);
     const native = useWindowSize();
-    const settingsLoaded = loadResult._tag !== "Initial";
 
     useAtomSubscribe(saveSettingsAtom, (t) => {
         if (AsyncResult.isFailure(t)) showToast("Settings save failed");
@@ -57,16 +56,18 @@ export function App() {
             <Opening onStart={() => setScreen(Screen.Countdown())} onSettings={() => setScreen(Screen.Settings())} />
         )),
         Match.tag("Settings", () =>
-            settingsLoaded ? (
-                <Settings
-                    settings={settings}
-                    onSave={(next) => {
-                        saveSettings(next);
-                        setScreen(Screen.Opening());
-                    }}
-                />
-            ) : (
-                <SettingsLoading />
+            Match.value(loadResult).pipe(
+                Match.tag("Initial", () => <SettingsLoading />),
+                Match.tag("Success", "Failure", () => (
+                    <Settings
+                        settings={settings}
+                        onSave={(next) => {
+                            saveSettings(next);
+                            setScreen(Screen.Opening());
+                        }}
+                    />
+                )),
+                Match.exhaustive,
             ),
         ),
         Match.tag("Countdown", () => (
