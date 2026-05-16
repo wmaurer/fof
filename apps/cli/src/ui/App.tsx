@@ -51,14 +51,17 @@ export function App() {
         if (input === "q") exit();
     });
 
-    const screenNode = Match.value(screen).pipe(
-        Match.tag("Opening", () => (
-            <Opening onStart={() => setScreen(Screen.Countdown())} onSettings={() => setScreen(Screen.Settings())} />
-        )),
-        Match.tag("Settings", () =>
-            Match.value(loadResult).pipe(
-                Match.tag("Initial", () => <SettingsLoading />),
-                Match.tag("Success", "Failure", () => (
+    const screenNode = Match.value(loadResult).pipe(
+        Match.tag("Initial", () => <SettingsLoading />),
+        Match.tag("Success", "Failure", () =>
+            Match.value(screen).pipe(
+                Match.tag("Opening", () => (
+                    <Opening
+                        onStart={() => setScreen(Screen.Countdown())}
+                        onSettings={() => setScreen(Screen.Settings())}
+                    />
+                )),
+                Match.tag("Settings", () => (
                     <Settings
                         settings={settings}
                         onSave={(next) => {
@@ -68,28 +71,31 @@ export function App() {
                         onCancel={() => setScreen(Screen.Opening())}
                     />
                 )),
+                Match.tag("Countdown", () => (
+                    <Countdown
+                        onDone={() => setScreen(Screen.ShowFist())}
+                        onCancel={() => setScreen(Screen.Opening())}
+                    />
+                )),
+                Match.tag("ShowFist", () => (
+                    <ShowFist
+                        onDone={() => setScreen(Screen.Collect())}
+                        onCancel={() => setScreen(Screen.Opening())}
+                    />
+                )),
+                Match.tag("Collect", () => (
+                    <Collect
+                        includeZero={settings.includeZero}
+                        onSubmit={(counts) => setScreen(Screen.Results({ counts }))}
+                        onCancel={() => setScreen(Screen.Opening())}
+                    />
+                )),
+                Match.tag("Results", ({ counts }) => (
+                    <Results counts={counts} settings={settings} onDone={() => setScreen(Screen.Opening())} />
+                )),
                 Match.exhaustive,
             ),
         ),
-        Match.tag("Countdown", () => (
-            <Countdown
-                onDone={() => setScreen(Screen.ShowFist())}
-                onCancel={() => setScreen(Screen.Opening())}
-            />
-        )),
-        Match.tag("ShowFist", () => (
-            <ShowFist onDone={() => setScreen(Screen.Collect())} onCancel={() => setScreen(Screen.Opening())} />
-        )),
-        Match.tag("Collect", () => (
-            <Collect
-                includeZero={settings.includeZero}
-                onSubmit={(counts) => setScreen(Screen.Results({ counts }))}
-                onCancel={() => setScreen(Screen.Opening())}
-            />
-        )),
-        Match.tag("Results", ({ counts }) => (
-            <Results counts={counts} settings={settings} onDone={() => setScreen(Screen.Opening())} />
-        )),
         Match.exhaustive,
     );
 
