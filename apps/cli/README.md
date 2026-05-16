@@ -35,14 +35,14 @@ fof
 
 The canonical "fist of five" semantics — each number has a fixed meaning:
 
-| Vote      | Meaning                              |
-| --------- | ------------------------------------ |
-| **5**     | Strong support — let's go.           |
-| **4**     | I support this.                      |
-| **3**     | I can live with it.                  |
-| **2**     | I have reservations — let's discuss. |
-| **1**     | I have serious concerns.             |
-| **0** 🪨  | Veto — we must not proceed.          |
+| Vote     | Meaning                              |
+| -------- | ------------------------------------ |
+| **5**    | Strong support — let's go.           |
+| **4**    | I support this.                      |
+| **3**    | I can live with it.                  |
+| **2**    | I have reservations — let's discuss. |
+| **1**    | I have serious concerns.             |
+| **0** 🪨 | Veto — we must not proceed.          |
 
 ### In poll mode
 
@@ -62,10 +62,10 @@ In consensus mode, a single veto blocks the decision regardless of how many 5s a
 
 Toggle between `consensus` (default) and `poll` in Settings.
 
-| Mode          | What you see                                                          |
-| ------------- | --------------------------------------------------------------------- |
+| Mode          | What you see                                                                         |
+| ------------- | ------------------------------------------------------------------------------------ |
 | **consensus** | Bar chart, average, **and a verdict**: ✓ Consensus / ⚠ Needs discussion / ✗ Blocked. |
-| **poll**      | Bar chart and average **only**. No verdict.                           |
+| **poll**      | Bar chart and average **only**. No verdict.                                          |
 
 The consensus verdicts use a fixed threshold of **3**:
 

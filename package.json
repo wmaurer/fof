@@ -12,7 +12,7 @@
         "lint": "oxlint",
         "fmt": "oxfmt .",
         "fmt:check": "oxfmt --check .",
-        "prepare": "effect-tsgo patch"
+        "prepare": "effect-tsgo patch && husky"
     },
     "devDependencies": {
         "@effect/tsgo": "latest",
@@ -20,9 +20,15 @@
         "@typescript/native-preview": "latest",
         "eslint-plugin-react-dom": "latest",
         "eslint-plugin-react-x": "latest",
+        "husky": "latest",
+        "lint-staged": "latest",
         "oxfmt": "latest",
         "oxlint": "latest",
         "vitest": "latest"
+    },
+    "lint-staged": {
+        "*.{ts,tsx,json,md,yml,yaml}": "oxfmt",
+        "*.{ts,tsx}": "oxlint"
     },
     "pnpm": {
         "onlyBuiltDependencies": [

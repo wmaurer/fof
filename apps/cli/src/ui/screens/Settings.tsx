@@ -83,11 +83,7 @@ export function Settings({
 
     if (confirming) {
         return (
-            <Confirm
-                message="Discard unsaved settings?"
-                onConfirm={onCancel}
-                onDismiss={() => setConfirming(false)}
-            />
+            <Confirm message="Discard unsaved settings?" onConfirm={onCancel} onDismiss={() => setConfirming(false)} />
         );
     }
 

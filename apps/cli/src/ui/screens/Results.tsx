@@ -1,9 +1,9 @@
 import { Array, Match } from "effect";
 import { Box, Text, useInput } from "ink";
 
-import { useTerminalSize } from "../terminal-size.js";
 import { CONSENSUS_THRESHOLD, displayValues, type VoteCounts } from "../fist.js";
 import { type Settings } from "../settings/model.js";
+import { useTerminalSize } from "../terminal-size.js";
 import { computeStatus } from "./results-status.js";
 
 const MAX_BAR_WIDTH = 30;

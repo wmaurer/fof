@@ -78,10 +78,7 @@ export function App() {
                     />
                 )),
                 Match.tag("ShowFist", () => (
-                    <ShowFist
-                        onDone={() => setScreen(Screen.Collect())}
-                        onCancel={() => setScreen(Screen.Opening())}
-                    />
+                    <ShowFist onDone={() => setScreen(Screen.Collect())} onCancel={() => setScreen(Screen.Opening())} />
                 )),
                 Match.tag("Collect", () => (
                     <Collect

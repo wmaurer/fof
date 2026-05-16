@@ -4,8 +4,8 @@ import TextInput from "ink-text-input";
 import { useState } from "react";
 
 import { Confirm } from "../Confirm.js";
-import { useTerminalSize } from "../terminal-size.js";
 import { FIST_VALUES, FIST_WORDS, decodeVoteCounts, displayValues, type FistValue, type VoteCounts } from "../fist.js";
+import { useTerminalSize } from "../terminal-size.js";
 import { cycleFocus } from "./focus.js";
 
 type Focus = FistValue | "submit";

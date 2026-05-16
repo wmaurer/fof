@@ -1,8 +1,8 @@
 import { assert, describe, it } from "@effect/vitest";
 import { ConfigProvider, Effect, FileSystem, Layer, Path, PlatformError } from "effect";
 
-import { SettingsStore } from "../../src/ui/settings/SettingsStore.js";
 import { DEFAULT_SETTINGS, type Settings } from "../../src/ui/settings/model.js";
+import { SettingsStore } from "../../src/ui/settings/SettingsStore.js";
 
 const SETTINGS_FILE = "/tmp/fof-test/.config/fof/settings.json";
 
@@ -18,9 +18,7 @@ const makeTestLayer = (seed?: ReadonlyMap<string, string>) => {
         makeDirectory: () => Effect.void,
     });
     const ConfigTest = ConfigProvider.layer(ConfigProvider.fromUnknown({ HOME: "/tmp/fof-test" }));
-    const layer = Layer.fresh(SettingsStore.layer).pipe(
-        Layer.provide(Layer.mergeAll(FsTest, Path.layer, ConfigTest)),
-    );
+    const layer = Layer.fresh(SettingsStore.layer).pipe(Layer.provide(Layer.mergeAll(FsTest, Path.layer, ConfigTest)));
     return { layer, files };
 };
 

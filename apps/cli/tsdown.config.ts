@@ -1,4 +1,4 @@
-import { defineConfig } from "tsdown"
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
     entry: { fof: "src/index.tsx" },
@@ -8,7 +8,5 @@ export default defineConfig({
     outDir: "dist",
     clean: true,
     external: ["react-devtools-core"],
-    outputOptions: {
-        banner: (chunk) => (chunk.isEntry ? "#!/usr/bin/env node\n" : ""),
-    },
-})
+    outputOptions: { banner: (chunk) => (chunk.isEntry ? "#!/usr/bin/env node\n" : "") },
+});
