@@ -1,58 +1,36 @@
-import { useAtomSet } from "@effect/atom-react";
-import { Array, Effect, Layer } from "effect";
+import { useAtomValue } from "@effect/atom-react";
+import { Array, Duration, Effect, Stream } from "effect";
 import { Atom } from "effect/unstable/reactivity";
 import { Box, Text, useInput } from "ink";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 
 import { renderBanner } from "../banner.js";
 import { useTerminalSize } from "../terminal-size.js";
 
 const START_FROM = 3;
-const TICK = "1 second";
-
-const countdownRuntime = Atom.runtime(Layer.empty);
+const TICK = Duration.seconds(1);
 
 const downFrom = Array.makeBy(START_FROM - 1, (i) => START_FROM - 1 - i);
 
-interface TickerArg {
-    readonly onTick: (n: number) => void;
-    readonly onDone: () => void;
-}
-
-const tickerAtom = countdownRuntime.fn((arg: TickerArg) =>
-    Effect.gen(function* () {
-        yield* Effect.forEach(downFrom, (n) =>
-            Effect.gen(function* () {
-                yield* Effect.sleep(TICK);
-                yield* Effect.sync(() => arg.onTick(n));
-            }),
-        );
-        yield* Effect.sleep(TICK);
-        yield* Effect.sync(arg.onDone);
-    }),
+const tickerStream = Stream.fromIterable(downFrom).pipe(
+    Stream.mapEffect((n) => Effect.as(Effect.sleep(TICK), n)),
+    Stream.concat(Stream.fromEffect(Effect.sleep(TICK)).pipe(Stream.drain)),
 );
+
+const tickerAtom = Atom.make(tickerStream, { initialValue: START_FROM });
 
 export function Countdown({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
     const { columns, rows } = useTerminalSize();
-    const start = useAtomSet(tickerAtom);
-    const [remaining, setRemaining] = useState(START_FROM);
-    const fired = useRef(false);
-    const onDoneRef = useRef(onDone);
-    onDoneRef.current = onDone;
-
-    const fire = (fn: () => void) => {
-        if (fired.current) return;
-        fired.current = true;
-        fn();
-    };
+    const ticker = useAtomValue(tickerAtom);
+    const remaining = ticker._tag === "Success" ? ticker.value : START_FROM;
+    const completed = ticker._tag === "Success" && !ticker.waiting;
 
     useEffect(() => {
-        start({ onTick: setRemaining, onDone: () => fire(onDoneRef.current) });
-        return () => start(Atom.Interrupt);
-    }, [start]);
+        if (completed) onDone();
+    }, [completed, onDone]);
 
     useInput((_input, key) => {
-        if (key.escape) fire(onCancel);
+        if (key.escape) onCancel();
     });
 
     return (
