@@ -1,8 +1,8 @@
-import { useAtomMount, useAtomValue } from "@effect/atom-react";
-import { Effect, Layer, Stream } from "effect";
+import { useAtomSet } from "@effect/atom-react";
+import { Array, Effect, Layer } from "effect";
 import { Atom } from "effect/unstable/reactivity";
-import { Box, Text, useWindowSize } from "ink";
-import { useEffect } from "react";
+import { Box, Text, useInput, useWindowSize } from "ink";
+import { useEffect, useRef, useState } from "react";
 
 import { renderBanner } from "../banner.js";
 
@@ -11,29 +11,60 @@ const TICK = "1 second";
 
 const countdownRuntime = Atom.runtime(Layer.empty);
 
-const remainingAtom = Atom.make(START_FROM);
+const downFrom = Array.makeBy(START_FROM - 1, (i) => START_FROM - 1 - i);
 
-const tickerAtom = countdownRuntime.atom((get) => {
-    get.set(remainingAtom, START_FROM);
-    get.addFinalizer(() => get.set(remainingAtom, START_FROM));
-    return Stream.iterate(START_FROM - 1, (n) => n - 1).pipe(
-        Stream.take(START_FROM),
-        Stream.mapEffect((next) => Effect.sync(() => get.set(remainingAtom, next)).pipe(Effect.delay(TICK))),
-    );
-});
+interface TickerArg {
+    readonly onTick: (n: number) => void;
+    readonly onDone: () => void;
+}
 
-export function Countdown({ onDone }: { onDone: () => void }) {
+const tickerAtom = countdownRuntime.fn((arg: TickerArg) =>
+    Effect.gen(function* () {
+        yield* Effect.forEach(downFrom, (n) =>
+            Effect.gen(function* () {
+                yield* Effect.sleep(TICK);
+                yield* Effect.sync(() => arg.onTick(n));
+            }),
+        );
+        yield* Effect.sleep(TICK);
+        yield* Effect.sync(arg.onDone);
+    }),
+);
+
+export function Countdown({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
     const { columns, rows } = useWindowSize();
-    useAtomMount(tickerAtom);
-    const remaining = useAtomValue(remainingAtom);
+    const start = useAtomSet(tickerAtom);
+    const [remaining, setRemaining] = useState(START_FROM);
+    const fired = useRef(false);
+    const onDoneRef = useRef(onDone);
+    const onCancelRef = useRef(onCancel);
+    onDoneRef.current = onDone;
+    onCancelRef.current = onCancel;
+
+    const fire = (fn: () => void) => {
+        if (fired.current) return;
+        fired.current = true;
+        fn();
+    };
 
     useEffect(() => {
-        if (remaining < 1) onDone();
-    }, [remaining, onDone]);
+        start({
+            onTick: setRemaining,
+            onDone: () => fire(onDoneRef.current),
+        });
+        return () => start(Atom.Interrupt);
+    }, [start]);
+
+    useInput((_input, key) => {
+        if (key.escape) fire(onCancelRef.current);
+    });
 
     return (
         <Box width={columns} height={rows} flexDirection="column" justifyContent="center" alignItems="center">
             <Text color="cyan">{renderBanner(String(remaining), { scale: 3 })}</Text>
+            <Box marginTop={2}>
+                <Text dimColor>Esc to cancel</Text>
+            </Box>
         </Box>
     );
 }

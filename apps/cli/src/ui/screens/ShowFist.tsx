@@ -1,10 +1,11 @@
 import { Box, Text, useInput, useWindowSize } from "ink";
 
-export function ShowFist({ onDone }: { onDone: () => void }) {
+export function ShowFist({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
     const { columns, rows } = useWindowSize();
 
     useInput((input, key) => {
-        if (key.return || input === " ") onDone();
+        if (key.escape) onCancel();
+        else if (key.return || input === " ") onDone();
     });
 
     return (
@@ -15,7 +16,7 @@ export function ShowFist({ onDone }: { onDone: () => void }) {
                 </Text>
             </Box>
             <Box marginTop={2}>
-                <Text dimColor>press space or enter when you've tallied</Text>
+                <Text dimColor>press space or enter to count results · esc to cancel</Text>
             </Box>
         </Box>
     );

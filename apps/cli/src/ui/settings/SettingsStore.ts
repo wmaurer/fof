@@ -25,14 +25,18 @@ export class SettingsStore extends Context.Service<SettingsStore>()("@wmaurer/fo
             if (!exists) return DEFAULT_SETTINGS;
             const raw = yield* fs.readFileString(settingsFile);
             return yield* decodeJson(raw);
-        }).pipe(Effect.catch(() => Effect.succeed(DEFAULT_SETTINGS)));
+        }).pipe(
+            Effect.catchCause((cause) =>
+                Effect.logError("settings load failed; using defaults", cause).pipe(Effect.as(DEFAULT_SETTINGS)),
+            ),
+        );
 
         const save = (settings: Settings): Effect.Effect<void> =>
             Effect.gen(function* () {
                 yield* fs.makeDirectory(settingsDir, { recursive: true });
                 const json = yield* encodeJson(settings);
                 yield* fs.writeFileString(settingsFile, json);
-            }).pipe(Effect.catch(() => Effect.void));
+            }).pipe(Effect.catchCause((cause) => Effect.logError("settings save failed", cause)));
 
         return { load, save } as const;
     }),
