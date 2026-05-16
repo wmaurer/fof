@@ -2,6 +2,7 @@ import { Match } from "effect";
 import { Box, Text, useInput } from "ink";
 import { useState } from "react";
 
+import { Confirm } from "../Confirm.js";
 import { useTerminalSize } from "../terminal-size.js";
 import { cycleFocus } from "./focus.js";
 
@@ -62,14 +63,7 @@ export function Settings({
     };
 
     useInput((input, key) => {
-        if (confirming) {
-            if (input === "y" || input === "Y") {
-                onCancel();
-                return;
-            }
-            if (input === "n" || input === "N" || key.escape) setConfirming(false);
-            return;
-        }
+        if (confirming) return;
         Match.value({ input, key }).pipe(
             Match.when({ key: { return: true } }, () => onSave(draft)),
             Match.when({ key: { escape: true } }, () => {
@@ -89,14 +83,11 @@ export function Settings({
 
     if (confirming) {
         return (
-            <Box width={columns} height={rows} flexDirection="column" justifyContent="center" alignItems="center">
-                <Box borderStyle="round" borderColor="yellow" paddingX={2} paddingY={1} flexDirection="column" alignItems="center">
-                    <Text bold>Discard unsaved settings?</Text>
-                    <Box marginTop={1}>
-                        <Text dimColor>y to confirm · n or Esc to cancel</Text>
-                    </Box>
-                </Box>
-            </Box>
+            <Confirm
+                message="Discard unsaved settings?"
+                onConfirm={onCancel}
+                onDismiss={() => setConfirming(false)}
+            />
         );
     }
 

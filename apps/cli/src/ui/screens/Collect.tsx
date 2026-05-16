@@ -1,9 +1,11 @@
 import { useAtomSet } from "@effect/atom-react";
-import { Match, Result } from "effect";
+import { Result } from "effect";
 import { Box, Text, useInput } from "ink";
-import { useCallback, useMemo, useState } from "react";
+import TextInput from "ink-text-input";
+import { useState } from "react";
 
 import { showToastAtom } from "../app-atoms.js";
+import { Confirm } from "../Confirm.js";
 import { useTerminalSize } from "../terminal-size.js";
 import { FIST_VALUES, FIST_WORDS, decodeVoteCounts, displayValues, type FistValue, type VoteCounts } from "../types.js";
 import { cycleFocus } from "./focus.js";
@@ -25,12 +27,12 @@ export function Collect({
     const { columns, rows } = useTerminalSize();
     const showToast = useAtomSet(showToastAtom);
     const [values, setValues] = useState<Record<FistValue, string>>(initialValues);
-    const visible = useMemo(() => displayValues(includeZero), [includeZero]);
-    const focusOrder = useMemo<ReadonlyArray<Focus>>(() => [...visible, "submit"], [visible]);
+    const visible = displayValues(includeZero);
+    const focusOrder: ReadonlyArray<Focus> = [...visible, "submit"];
     const [focus, setFocus] = useState<Focus>(() => visible[0]!);
     const [confirming, setConfirming] = useState(false);
 
-    const submit = useCallback(() => {
+    const submit = () => {
         const raw = Object.fromEntries(FIST_VALUES.map((v) => [v, values[v] || "0"]));
         const result = decodeVoteCounts(raw);
         if (Result.isFailure(result)) {
@@ -38,67 +40,41 @@ export function Collect({
             return;
         }
         onSubmit(result.success);
-    }, [values, onSubmit, showToast]);
+    };
 
-    useInput((input, key) => {
-        if (confirming) {
-            if (input === "y" || input === "Y") {
-                onCancel();
-                return;
-            }
-            if (input === "n" || input === "N" || key.escape) setConfirming(false);
-            return;
-        }
+    const advanceFocus = (from: Focus) => {
+        const idx = focusOrder.indexOf(from);
+        setFocus(focusOrder[idx + 1] ?? from);
+    };
+
+    useInput((_input, key) => {
+        if (confirming) return;
         if (key.escape) {
             setConfirming(true);
             return;
         }
-        const navigated = Match.value({ key }).pipe(
-            Match.when({ key: { tab: true } }, ({ key: k }) => {
-                setFocus(cycleFocus(focusOrder, focus, k.shift ? -1 : 1));
-                return true;
-            }),
-            Match.when({ key: { downArrow: true } }, () => {
-                setFocus(cycleFocus(focusOrder, focus, 1));
-                return true;
-            }),
-            Match.when({ key: { upArrow: true } }, () => {
-                setFocus(cycleFocus(focusOrder, focus, -1));
-                return true;
-            }),
-            Match.orElse(() => false),
-        );
-        if (navigated) return;
-        if (focus === "submit") {
-            if (key.return) submit();
+        if (key.tab) {
+            setFocus(cycleFocus(focusOrder, focus, key.shift ? -1 : 1));
             return;
         }
-        if (key.return) {
-            const idx = focusOrder.indexOf(focus);
-            setFocus(focusOrder[idx + 1]!);
+        if (key.downArrow) {
+            setFocus(cycleFocus(focusOrder, focus, 1));
             return;
         }
-        const f: FistValue = focus;
-        if (key.backspace || key.delete) {
-            setValues((v) => ({ ...v, [f]: v[f].slice(0, -1) }));
+        if (key.upArrow) {
+            setFocus(cycleFocus(focusOrder, focus, -1));
             return;
         }
-        const digits = input.replace(/\D/g, "");
-        if (digits.length > 0) {
-            setValues((v) => ({ ...v, [f]: (v[f] + digits).slice(0, 3) }));
-        }
+        if (focus === "submit" && key.return) submit();
     });
 
     if (confirming) {
         return (
-            <Box width={columns} height={rows} flexDirection="column" justifyContent="center" alignItems="center">
-                <Box borderStyle="round" borderColor="yellow" paddingX={2} paddingY={1} flexDirection="column" alignItems="center">
-                    <Text bold>Discard votes and return to home?</Text>
-                    <Box marginTop={1}>
-                        <Text dimColor>y to confirm · n or Esc to cancel</Text>
-                    </Box>
-                </Box>
-            </Box>
+            <Confirm
+                message="Discard votes and return to home?"
+                onConfirm={onCancel}
+                onDismiss={() => setConfirming(false)}
+            />
         );
     }
 
@@ -113,7 +89,16 @@ export function Collect({
                         <Text color={v === 0 ? "red" : undefined}>{FIST_WORDS[v]}</Text>
                     </Box>
                     <Box borderStyle="round" borderColor={focus === v ? "cyan" : "gray"} paddingX={1} width={8}>
-                        <Text bold={focus === v}>{values[v].padEnd(3, " ")}</Text>
+                        <TextInput
+                            focus={focus === v}
+                            value={values[v]}
+                            placeholder=" "
+                            onChange={(next) => {
+                                const digits = next.replace(/\D/g, "").slice(0, 3);
+                                setValues((curr) => ({ ...curr, [v]: digits }));
+                            }}
+                            onSubmit={() => advanceFocus(v)}
+                        />
                     </Box>
                 </Box>
             ))}
