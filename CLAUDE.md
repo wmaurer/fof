@@ -40,7 +40,7 @@ Files:
 ## Common commands
 
 ```
-pnpm start [args]                 # run the CLI (delegates to @fof/cli)
+pnpm start [args]                 # run the CLI (delegates to @wmaurer/fof)
 pnpm dev   [args]                 # tsx watch — restart on file change
 pnpm typecheck                    # tsgo on root tsconfig (covers entire workspace)
 pnpm test  / pnpm test:watch      # vitest (projects = apps/*, packages/*)
@@ -49,7 +49,7 @@ bash scripts/fetch-references.sh  # clone/refresh .repos/ entries
 
 ## Layout
 
-- `apps/cli/` — `@fof/cli`, the CLI app. Entry: `src/index.ts`.
+- `apps/cli/` — `@wmaurer/fof`, the CLI app published to npm. Entry: `src/index.tsx`; bundled to `dist/fof.mjs` via `tsdown` (see `apps/cli/tsdown.config.ts`).
 - `packages/` — placeholder for shared libs (currently empty).
 - `.patterns/` — Effect v4 pattern reference docs (see _Patterns_ section above).
 - `scripts/fetch-references.sh` — reference-repo cloner; populates `.repos/`.

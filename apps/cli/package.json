@@ -2,12 +2,37 @@
     "name": "@wmaurer/fof",
     "version": "0.1.0",
     "description": "fist of five — group decision-making in the terminal",
+    "keywords": [
+        "cli",
+        "ink",
+        "effect",
+        "consensus",
+        "decision-making",
+        "fist-of-five",
+        "tui"
+    ],
+    "homepage": "https://github.com/wmaurer/fof#readme",
+    "bugs": {
+        "url": "https://github.com/wmaurer/fof/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wmaurer/fof.git",
+        "directory": "apps/cli"
+    },
+    "license": "MIT",
+    "author": {
+        "name": "Wayne Maurer",
+        "email": "2899448+wmaurer@users.noreply.github.com"
+    },
     "type": "module",
     "bin": {
         "fof": "./dist/fof.mjs"
     },
     "files": [
-        "dist"
+        "dist",
+        "README.md",
+        "LICENSE"
     ],
     "engines": {
         "node": ">=20"
