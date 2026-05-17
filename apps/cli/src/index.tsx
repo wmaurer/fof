@@ -4,6 +4,7 @@ import { Effect } from "effect";
 import { Command } from "effect/unstable/cli";
 import { render } from "ink";
 
+import pkg from "../package.json" with { type: "json" };
 import { App } from "./ui/App.js";
 
 const makeInstance = Effect.acquireRelease(
@@ -25,7 +26,7 @@ const fof = Command.make("fof", {}, () =>
     }).pipe(Effect.scoped, Effect.withSpan("fof.run")),
 ).pipe(Command.withDescription("fist of five — group decision-making in the terminal"));
 
-Command.run(fof, { version: "0.0.0" }).pipe(
+Command.run(fof, { version: pkg.version }).pipe(
     // @effect-diagnostics-next-line strictEffectProvide:off
     Effect.provide(NodeServices.layer),
     NodeRuntime.runMain,
