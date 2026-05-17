@@ -77,7 +77,7 @@ importers:
         version: 19.2.6
       tsdown:
         specifier: latest
-        version: 0.22.0(@typescript/native-preview@7.0.0-dev.20260514.1)(tsx@4.22.0)(typescript@6.0.3)
+        version: 0.22.0(@typescript/native-preview@7.0.0-dev.20260514.1)(tsx@4.22.0)(typescript@6.0.3)(unrun@0.3.0)
       tsx:
         specifier: ^4.22.0
         version: 4.22.0
@@ -1850,6 +1850,16 @@ packages:
     resolution: {integrity: sha512-TkUDgb6tl7KOGZ+7e8E3d2FYgUQgF6z5YypqjWmixVQSQERFcVrVg0ySADm2LVLRh5ljAaHTCR5Fmz3Q34rB7Q==}
     engines: {node: '>=22.19.0'}
 
+  unrun@0.3.0:
+    resolution: {integrity: sha512-5xw2AIVS2WR9Lqhz76qDIQLxipKRidf7Nq+Iz5SZ8shk1OmRlxnc6FyI/1Q2m99WLj6cbqaKFdESfWE99KPzlA==}
+    engines: {node: ^22.13.0 || >=24.0.0}
+    hasBin: true
+    peerDependencies:
+      synckit: ^0.11.11
+    peerDependenciesMeta:
+      synckit:
+        optional: true
+
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
@@ -3473,7 +3483,7 @@ snapshots:
 
   ts-pattern@5.9.0: {}
 
-  tsdown@0.22.0(@typescript/native-preview@7.0.0-dev.20260514.1)(tsx@4.22.0)(typescript@6.0.3):
+  tsdown@0.22.0(@typescript/native-preview@7.0.0-dev.20260514.1)(tsx@4.22.0)(typescript@6.0.3)(unrun@0.3.0):
     dependencies:
       ansis: 4.3.0
       cac: 7.0.0
@@ -3493,6 +3503,7 @@ snapshots:
     optionalDependencies:
       tsx: 4.22.0
       typescript: 6.0.3
+      unrun: 0.3.0
     transitivePeerDependencies:
       - '@ts-macro/tsc'
       - '@typescript/native-preview'
@@ -3528,6 +3539,11 @@ snapshots:
   undici-types@7.24.6: {}
 
   undici@8.3.0: {}
+
+  unrun@0.3.0:
+    dependencies:
+      rolldown: 1.0.1
+    optional: true
 
   uri-js@4.4.1:
     dependencies:
